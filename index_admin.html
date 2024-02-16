@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Page</title>
+  <style>
+    body {
+     font-family: 'Montserrat', sans-serif;
+     margin: 0;
+     padding: 0;
+     background-image: linear-gradient(to right top, #b7a2ca, #8a87ad, #5d6b91, #305e75, #04505b);
+     background-size: cover;
+     background-position: center;
+ }
+ 
+ header {
+     background-color: rgba(0, 0, 0, 0.7);
+     color: #fff;
+     padding: 20px;
+     text-align: center;
+ }
+ 
+ nav {
+     background-color: rgba(0, 0, 0, 0.7);
+     padding: 15px;
+     display: flex; /* Align buttons in one line */
+     justify-content: space-around; /* Evenly distribute space between buttons */
+ }
+ 
+ section {
+     padding: 30px;
+ }
+ 
+ button {
+     background-color: #ff7e67;
+     color: white;
+     padding: 20px 40px; /* Increase padding for larger button size */
+     border: none;
+     border-radius: 25px;
+     cursor: pointer;
+     font-family: 'Montserrat', sans-serif;
+     font-size: 1.2em;
+     text-transform: uppercase;
+     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+     transition: background-color 0.3s ease, transform 0.3s ease;
+ }
+ 
+ button:hover {
+     background-color: #ff5555;
+     transform: translateY(-3px);
+ }
+ 
+ table {
+     width: 100%;
+     border-collapse: collapse;
+     margin-top: 30px;
+     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+ }
+ 
+ th, td {
+     padding: 15px;
+     text-align: left;
+     border-bottom: 2px solid #fff;
+     color: #fff;
+ }
+ 
+ th {
+     background-color: #ff7e67;
+     font-size: 1.1em;
+     text-transform: uppercase;
+ }
+ 
+ td {
+     background-color: rgba(255, 255, 255, 0.1);
+     font-size: 1em;
+ }
+ 
+   </style>
+</head>
+<body>
+
+  <header>
+    <h1>Admin Page</h1>
+  </header>
+
+  <nav>
+    <button onclick="showAddRestaurantForm()">Add Restaurant</button>
+    <button onclick="showRemoveRestaurantForm()">Remove Restaurant</button>
+    <button onclick="showAllRestaurants()">View All Restaurants</button>
+    <button onclick="showReviews()">View Reviews</button>
+  </nav>
+
+  <section id="content">
+    <!-- Content will be dynamically updated based on button clicks -->
+  </section>
+
+  <script>
+    // Sample data for demonstration purposes
+    const restaurants = [
+      { name: 'Restaurant 1', cuisine: 'Italian' },
+      { name: 'Restaurant 2', cuisine: 'Mexican' },
+      // Add more restaurants as needed
+    ];
+    const apiUrl = 'http://13.232.207.85:8000/restaurants/'; // Replace with your actual API endpoint
+
+
+    function showAddRestaurantForm() {
+        window.location.href = "portrestaurant.html";
+    }
+
+    function showAllRestaurants() {
+      fetch('https://cors-anywhere.herokuapp.com/' + apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          let restaurantListHTML = '<h2>All Restaurants</h2>';
+          restaurantListHTML += '<table>';
+          restaurantListHTML += '<tr><th>Name</th><th>Phone Number</th><th>Type</th><th>Opening Time</th><th>Closing Time</th><th>Rating</th></tr>';
+
+          data.restaurants.forEach(restaurant => {
+            restaurantListHTML += `
+              <tr>
+                <td>${restaurant.name}</td>
+                <td>${restaurant.phone_number}</td>
+                <td>${restaurant.restaurant_type}</td>
+                <td>${restaurant.opening_time}</td>
+                <td>${restaurant.closing_time}</td>
+                <td>${restaurant.rating}</td>
+              </tr>
+            `;
+          });
+
+          restaurantListHTML += '</table>';
+          document.getElementById('content').innerHTML = restaurantListHTML;
+        })
+        .catch(error => {
+          console.error('Error fetching restaurant data:', error);
+        });
+    }
+    function showRemoveRestaurantForm(){
+      window.location.href = "delete_res.html";
+    }
+
+
+    function showReviews() {
+      // You would fetch and display reviews here
+      document.getElementById('content').innerHTML = `
+        <h2>Restaurant Reviews</h2>
+        <table>
+          <tr>
+            <th>Restaurant</th>
+            <th>Review</th>
+          </tr>
+          <tr>
+            <td>Restaurant 1</td>
+            <td>Great food!</td>
+          </tr>
+          <tr>
+            <td>Restaurant 2</td>
+            <td>Amazing service!</td>
+          </tr>
+          <!-- Add more rows based on your data -->
+        </table>
+      `;
+    }
+  </script>
+
+</body>
+</html>

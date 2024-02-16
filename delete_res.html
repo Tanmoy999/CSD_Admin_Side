@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Delete Restaurant</title>
+  <style>
+    body {
+  font-family: 'Roboto', sans-serif;
+  background-image: linear-gradient(to bottom right, #ff6b6b, #ffb677);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 1.2em;
+  color: #333;
+}
+
+input {
+  width: calc(100% - 20px);
+  padding: 12px;
+  margin-bottom: 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+#result {
+  margin-top: 30px;
+  font-weight: bold;
+  color: #333;
+  font-size: 1.2em;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Delete Restaurant</h1>
+    <label for="restaurantName">Restaurant Name:</label>
+    <input type="text" id="restaurantName" placeholder="Enter restaurant name">
+    <button id="deleteButton">Delete</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    document.getElementById('deleteButton').addEventListener('click', function() {
+      var restaurantName = document.getElementById('restaurantName').value;
+      deleteRestaurant(restaurantName);
+    });
+
+    function deleteRestaurant(name) {
+      var myHeaders = new Headers();
+      myHeaders.append("name", name);
+
+      var requestOptions = {
+        method: 'DELETE',
+        headers: myHeaders,
+        body: '',
+        redirect: 'follow'
+      };
+      const apiUrl = 'http://13.232.207.85:8000/restaurants/';
+
+      fetch('https://cors-anywhere.herokuapp.com/' + apiUrl + name, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+          console.log(result);
+          alert(name+" deleted successfully!!!");
+          document.getElementById('result').innerText = result;
+        })
+        .catch(error => console.log('error', error));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Form</title>
+    <style>
+        body {
+          font-family: "Poppins", sans-serif;
+          margin: 0;
+          padding: 0;
+          background: linear-gradient(135deg, #c850c0, #4158d0);
+          background-size: cover;
+          background-position: center;
+          min-height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+  
+        form {
+          background-color: rgba(255, 255, 255, 0.9);
+          padding: 40px;
+          border-radius: 10px;
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+          max-width: 500px;
+          width: 100%;
+          text-align: center; /* Align buttons to center */
+        }
+  
+        h1 {
+          text-align: center;
+          margin-bottom: 30px;
+          color: #333;
+        }
+  
+        label {
+          display: block;
+          margin-bottom: 10px;
+          font-weight: bold;
+          color: #555;
+        }
+  
+        input,
+        select,
+        textarea {
+          width: calc(100% - 20px);
+          padding: 10px;
+          border: 2px solid #ccc;
+          border-radius: 6px;
+          margin-bottom: 20px;
+          transition: border-color 0.3s ease;
+        }
+  
+        textarea {
+          height: 150px;
+        }
+  
+        button {
+          background-color: #6c5ce7;
+          color: #fff;
+          padding: 15px 30px;
+          border: none;
+          border-radius: 25px;
+          cursor: pointer;
+          transition: background-color 0.3s ease, transform 0.3s ease;
+          margin: 0 5px; /* Add some space between buttons */
+        }
+  
+        button:hover {
+          background-color: #4834d4;
+          transform: scale(1.05);
+        }
+      </style>
+</head>
+<body>
+    
+    <form id="restaurantForm" enctype="multipart/form-data">
+        <h1>Add New Restaurant</h1>
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+        
+        <label for="phone_number">Phone Number:</label><br>
+        <input type="text" id="phone_number" name="phone_number" required><br>
+        
+        <label for="restaurant_type">Restaurant Type:</label><br>
+        <select id="restaurant_type" name="restaurant_type" required>
+            <option value="Veg">Veg</option>
+            <option value="Non-Veg">Non-Veg</option>
+            <option value="Both">Both</option>
+        </select><br>
+        
+        <label for="opening_time">Opening Time:</label><br>
+        <!-- Use a time picker input -->
+        <input type="time" id="opening_time" name="opening_time" required><br>
+        
+        <label for="closing_time">Closing Time:</label><br>
+        <!-- Use a time picker input -->
+        <input type="time" id="closing_time" name="closing_time" required><br>
+        
+        <label for="rating">Rating:</label><br>
+        <input type="number" id="rating" name="rating" min="0" max="5" step="0.1"><br>
+        
+        <label for="image">Image:</label><br>
+        <input type="file" id="image" name="image" accept="image/*" required><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById("restaurantForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+
+            // Convert opening time to 12-hour format with AM/PM
+            const openingTimeInput = document.getElementById("opening_time");
+            const openingTimeValue = openingTimeInput.value;
+            const openingTime = convertTo12HourFormat(openingTimeValue);
+            formData.set("opening_time", openingTime);
+
+            // Convert closing time to 12-hour format with AM/PM
+            const closingTimeInput = document.getElementById("closing_time");
+            const closingTimeValue = closingTimeInput.value;
+            const closingTime = convertTo12HourFormat(closingTimeValue);
+            formData.set("closing_time", closingTime);
+
+            try {
+                const requestOptions = {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData,
+                    redirect: 'follow'
+                };
+
+                const response = await fetch("http://13.232.207.85:8000/restaurants/", requestOptions);
+
+                if (!response.ok) {
+                    throw new Error("Failed to add restaurant");
+                }
+
+                const result = await response.text();
+                console.log(result);
+                
+            } catch (error) {
+                console.error('error', error);
+            }
+        });
+
+        // Function to convert time to 12-hour format with AM/PM
+        function convertTo12HourFormat(timeString) {
+            const [hours, minutes] = timeString.split(":");
+            let hour = parseInt(hours, 10);
+            const minute = parseInt(minutes, 10);
+
+            let period = "AM";
+            if (hour >= 12) {
+                period = "PM";
+            }
+            if (hour === 0) {
+                hour = 12;
+            } else if (hour > 12) {
+                hour -= 12;
+            }
+
+            return `${hour}:${minute < 10 ? "0" : ""}${minute} ${period}`;
+        }
+    </script>
+</body>
+</html>
